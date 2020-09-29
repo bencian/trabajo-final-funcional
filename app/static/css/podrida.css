@@ -1,14 +1,15 @@
 body {
-  background: rgb(156, 177, 37);
-  color: rgb(21, 48, 201);
-  font-family: ubuntu, sans-serif;
-  font-size: 14px;
-  background: url(stripes-bg.png);
+  background: url(wood-bg.png);
   padding-top: 1em;
-  text-shadow: rgb(235, 20, 20) 3px 1px 3px;
 }
 h1 {
   font-size: 4em;
   margin: 0;
   padding-bottom: 0.2em;
+}
+h1 span {
+  color: azure;
+}
+.btn_init_page{
+  margin: 10px;
 }
