@@ -3,11 +3,11 @@ if [ -d "../.cabal-sandbox" ]; then
   ghc -i../src \
     -no-user-package-db \
     -package-db ../.cabal-sandbox/*-packages.conf.d \
-    "podrida.hs" -e main
+    "main_menu.hs" -e main
 elif [ -e "../stack.yaml" ]; then
   stack --stack-yaml "../stack.yaml" exec \
     ghc -- -i../src \
-    "podrida.hs" -e main
+    "main_menu.hs" -e main
 else
-  ghc "podrida.hs" -e main
+  ghc "main_menu.hs" -e main
 fi
