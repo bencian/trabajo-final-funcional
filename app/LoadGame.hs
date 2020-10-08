@@ -1,4 +1,4 @@
-module LoadGame (render_load_game) where
+module LoadGame (main_menu_button) where
   import qualified Graphics.UI.Threepenny as UI
   import Graphics.UI.Threepenny.Core
 
@@ -7,6 +7,7 @@ module LoadGame (render_load_game) where
   import System.FilePath
   import System.IO
 
-  render_load_game :: Window -> UI ()
-  render_load_game w = do
-    return w # set title "Cargar Juego"
+  import Shared
+  
+  
+  

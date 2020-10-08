@@ -8,5 +8,7 @@ module Statistics (render_statistics) where
   import System.IO
   
   render_statistics :: Window -> UI ()
-  render_statistics w = do
+  render_statistics w = void $ do
     return w # set title "Estadisticas"
+    UI.addStyleSheet w "podrida.css"
+    UI.addStyleSheet w "bootstrap.css"

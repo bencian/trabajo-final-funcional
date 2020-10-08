@@ -8,5 +8,7 @@ module NewGame (render_new_game) where
   import System.IO
 
   render_new_game :: Window -> UI ()
-  render_new_game w = do
+  render_new_game w = void $ do
     return w # set title "Nuevo Juego"
+    UI.addStyleSheet w "podrida.css"
+    UI.addStyleSheet w "bootstrap.css"
