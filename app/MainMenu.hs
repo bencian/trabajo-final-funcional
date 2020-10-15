@@ -8,7 +8,7 @@ import System.IO
 
 import Statistics
 import NewGame
--- import LoadGame
+import LoadGame
 import Shared
 
 -- | Main entry point.
@@ -34,13 +34,13 @@ setup w = do
 
   on UI.click (from_just new_game_button) $ const $ do
     delete (from_just main_div_element)
-    render_new_game w
+    render_new_page w render_new_game
   on UI.click (from_just load_game_button) $ const $ do
     delete (from_just main_div_element)
-    render_load_game w
+    render_new_page w render_load_game
   on UI.click (from_just statistics_button) $ const $ do
     delete (from_just main_div_element)
-    render_statistics w
+    render_new_page w render_load_game
 
 greet :: UI Element
 greet =
@@ -56,8 +56,8 @@ make_buttons =
 getStaticDir :: IO FilePath
 getStaticDir = return "static"
 
-render_load_game :: Window -> UI ()
-render_load_game w = void $ do
+render_new_page :: Window -> (Window -> UI ()) -> UI ()
+render_new_page w render_page = void $ do
   return w # set title "Cargar Juego"
   UI.addStyleSheet w "podrida.css"
   UI.addStyleSheet w "bootstrap.css"
@@ -70,3 +70,5 @@ render_load_game w = void $ do
   on UI.click (from_just main_menu_button) $ const $ do
     delete (from_just main_div_element)
     setup w
+
+  render_page w

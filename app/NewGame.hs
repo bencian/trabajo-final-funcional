@@ -10,5 +10,5 @@ module NewGame (render_new_game) where
   render_new_game :: Window -> UI ()
   render_new_game w = void $ do
     return w # set title "Nuevo Juego"
-    UI.addStyleSheet w "podrida.css"
-    UI.addStyleSheet w "bootstrap.css"
+    prueba_p <- UI.p # set UI.text "Prueba otro" # set UI.id_ "Prueba_new_game"
+    getBody w #+ [element prueba_p]
