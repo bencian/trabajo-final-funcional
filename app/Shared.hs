@@ -1,4 +1,4 @@
-module Shared (button_container, main_div, from_just, main_menu_button) where
+module Shared (button_container, main_div, from_just, main_menu_button, redirect_to_button) where
   import qualified Graphics.UI.Threepenny as UI
   import Graphics.UI.Threepenny.Core
 
@@ -8,7 +8,7 @@ module Shared (button_container, main_div, from_just, main_menu_button) where
   import System.IO
 
   main_menu_button :: [UI Element]
-  main_menu_button = 
+  main_menu_button =
       [ UI.button # set UI.text "Volver" # set UI.class_ "btn_init_page btn col-4" # set UI.id_ "main_menu" ]
 
   button_container :: [UI Element] -> [UI Element]
@@ -26,3 +26,11 @@ module Shared (button_container, main_div, from_just, main_menu_button) where
   from_just :: Maybe a -> a
   from_just (Just a) = a
   from_just Nothing = error "Oops, you goofed up, fool."
+
+  redirect_to_button text screen_function w = do
+    screen_button <- getElementById w text
+    main_div_element <- getElementById w "main_div"
+
+    on UI.click (from_just screen_button) $ const $ do
+      delete (from_just main_div_element)
+      screen_function w

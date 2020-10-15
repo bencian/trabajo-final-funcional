@@ -9,11 +9,12 @@ module LoadGame (render_load_game) where
 
   import Shared
 
-  render_load_game :: Window -> UI ()
-  render_load_game w = void $ do
+  render_load_game :: (Window -> UI ()) -> Window -> UI ()
+  render_load_game setup w = void $ do
     return w # set title "Otro Juego"
-    prueba_p <- UI.p # set UI.text "Prueba otro" # set UI.id_ "Prueba_load_game"
-    getBody w #+ [element prueba_p]
-  
-  
-  
+    UI.addStyleSheet w "podrida.css"
+    UI.addStyleSheet w "bootstrap.css"
+    
+    getBody w #+ main_div (button_container main_menu_button)
+    
+    redirect_to_button "main_menu" setup w

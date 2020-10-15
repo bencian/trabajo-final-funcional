@@ -27,20 +27,9 @@ setup w = do
       
   getBody w #+ main_div (greet:(button_container make_buttons))
 
-  new_game_button <- getElementById w "new_game"
-  load_game_button <- getElementById w "load_game"
-  statistics_button <- getElementById w "statistics"
-  main_div_element <- getElementById w "main_div"
-
-  on UI.click (from_just new_game_button) $ const $ do
-    delete (from_just main_div_element)
-    render_new_page w render_new_game
-  on UI.click (from_just load_game_button) $ const $ do
-    delete (from_just main_div_element)
-    render_new_page w render_load_game
-  on UI.click (from_just statistics_button) $ const $ do
-    delete (from_just main_div_element)
-    render_new_page w render_load_game
+  redirect_to_button "new_game" (render_new_game setup) w
+  redirect_to_button "load_game" (render_new_game setup) w
+  redirect_to_button "statistics" (render_new_game setup) w
 
 greet :: UI Element
 greet =
@@ -56,19 +45,3 @@ make_buttons =
 getStaticDir :: IO FilePath
 getStaticDir = return "static"
 
-render_new_page :: Window -> (Window -> UI ()) -> UI ()
-render_new_page w render_page = void $ do
-  return w # set title "Cargar Juego"
-  UI.addStyleSheet w "podrida.css"
-  UI.addStyleSheet w "bootstrap.css"
-
-  getBody w #+ main_div (button_container main_menu_button)
-
-  main_menu_button <- getElementById w "main_menu"
-  main_div_element <- getElementById w "main_div"
-
-  on UI.click (from_just main_menu_button) $ const $ do
-    delete (from_just main_div_element)
-    setup w
-
-  render_page w
