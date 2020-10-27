@@ -8,6 +8,7 @@ module LoadGame (render_load_game) where
   import System.IO
 
   import Shared
+  import PlayGame
 
   render_load_game :: (Window -> UI ()) -> Window -> UI ()
   render_load_game setup w = void $ do
@@ -18,3 +19,5 @@ module LoadGame (render_load_game) where
     getBody w #+ main_div (button_container main_menu_button)
     
     redirect_to_button "main_menu" setup w
+    -- [] has the game, TO DO 
+    -- redirect_to_button "play_game" (render_play_game game_name (UI name_list)  setup) w
