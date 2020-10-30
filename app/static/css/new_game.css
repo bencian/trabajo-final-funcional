@@ -1,0 +1,35 @@
+body {
+  background: url(wood-bg.png);
+  padding-top: 1em;
+}
+
+#main_div {
+  text-align: center;
+}
+
+#game_title {
+  margin: 2em;
+  width: 25em;
+  height: 3em;
+}
+
+#add_and_remove_buttons {
+  display: inline-grid
+}
+
+#add_and_remove_buttons button {
+  margin: 3px
+}
+
+#form_div{
+  display: inline-grid
+}
+
+#form_div input{
+  margin: 3px
+}
+
+h3 {
+  color: azure;
+}
+

@@ -1,0 +1,30 @@
+body {
+  background: url(wood-bg.png);
+  padding-top: 1em;
+}
+
+#main_div {
+  text-align: center;
+
+}
+
+#players_ul {
+  color: azure;
+  list-style-type: none;
+  display: flex;
+}
+
+#players_ul li{
+  margin: 2em;
+}
+
+h4 {
+  color: azure;
+  text-align: left;
+}
+
+h2 {
+  color: azure;
+  margin-left: 1em;
+}
+
