@@ -8,10 +8,22 @@ body {
 
 }
 
-#players_ul {
+#board_table {
   color: azure;
-  list-style-type: none;
-  display: flex;
+  width: 90%;
+  margin: auto;
+  margin-top: 3em;
+}
+
+#board_headers {
+  font-size: 16px;
+  font-weight: bold;
+  background-color: azure;
+  color:#212529;
+}
+
+#round_header {
+  width: 10%;
 }
 
 #players_ul li{

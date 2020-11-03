@@ -13,7 +13,7 @@ module Shared where
 
   main_menu_button :: [UI Element]
   main_menu_button =
-      [ UI.button # set UI.text "Volver" # set UI.class_ "btn_init_page btn col-4" # set UI.id_ "main_menu" ]
+      [ UI.button # set UI.text "Salir" # set UI.class_ "btn_init_page btn col-4" # set UI.id_ "main_menu" ]
 
   play_game_button :: [UI Element]
   play_game_button =

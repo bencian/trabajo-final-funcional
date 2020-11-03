@@ -17,7 +17,7 @@ module PlayGame (render_play_game) where
 
     title <- game_title
 
-    getBody w #+ main_div ([greet title] ++ players_container player_list ++ button_container main_menu_button)
+    getBody w #+ main_div ([greet title, board player_list] ++ button_container main_menu_button)
     
     redirect_to_button "main_menu" setup w
   
@@ -25,10 +25,16 @@ module PlayGame (render_play_game) where
   greet name =
     UI.h2 #+ [string name ] # set UI.class_ "text-center text-light"
 
-  players_container :: UI [String] -> [UI Element]
-  players_container player_list = [UI.h4 # set UI.text "Jugadores: ", players_ul player_list]
-
-  players_ul :: UI [String] -> UI Element
-  players_ul players_list = do
+  board :: UI [String] -> UI Element
+  board players_list = do
     players <- players_list
-    UI.ul # set UI.id_ "players_ul" #+ map (\name -> UI.li #+ [string name]) players
+    let table = UI.table # set UI.id_ "board_table" # set UI.class_ "table table-bordered table-dark"
+    table #+ board_header players
+
+  board_header :: [String] -> [UI Element]
+  board_header players =
+    let round_header = UI.td # set UI.id_ "round_header" #+ [string "Ronda"]
+    in [UI.tr # set UI.id_ "board_headers" #+ (round_header:players_td_list players)]
+
+  players_td_list :: [String] -> [UI Element]
+  players_td_list players = map (\name -> UI.td #+ [string name]) players
