@@ -7,10 +7,6 @@ module Shared where
   import System.FilePath
   import System.IO
 
-  type Game = [Round]
-  type Round = [Player]
-  type Player = (String,Int,Int)
-
   main_menu_button :: [UI Element]
   main_menu_button =
       [ UI.button # set UI.text "Salir" # set UI.class_ "btn_init_page btn col-4" # set UI.id_ "main_menu" ]

@@ -10,6 +10,7 @@ module NewGame (render_new_game) where
 
   import PlayGame
   import Shared
+  import SharedBackend
 
   render_new_game :: (Window -> UI ()) -> Window -> UI ()
   render_new_game setup w = void $ do
@@ -50,7 +51,7 @@ module NewGame (render_new_game) where
     addInput
     redo_layout
     redirect_to_button "main_menu" setup w
-    redirect_to_button "play_game" (render_play_game game_title player_list setup) w 
+    redirect_to_button "play_game" (render_play_game game_title (create_new_game player_list) setup) w 
 
     on UI.click add_player_button $ \_ -> addInput >> redo_layout
     on UI.click remove_player_button $ \_ -> removeInput >> redo_layout
@@ -76,11 +77,3 @@ module NewGame (render_new_game) where
 
   add_game_players_form :: Element -> Element -> [UI Element]
   add_game_players_form add_player_button remove_player_button = game_players_form [add_player_button, remove_player_button]
-
-
-  -- start_game :: Game
-  -- start_game w = do
-  --   element <- getElementById w "player_name"
-  --   player_name <- get value (from_just element)
-  --   return player_name
-    
