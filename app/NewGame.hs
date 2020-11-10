@@ -32,7 +32,7 @@ module NewGame (render_new_game) where
       player_list :: UI [String]
       player_list = mapM (get value) =<< liftIO (readIORef inputs)
 
-      game_title =  get value (from_just game_name_element)
+      game_title = get value (from_just game_name_element)
 
       addInput :: UI ()
       addInput = do
