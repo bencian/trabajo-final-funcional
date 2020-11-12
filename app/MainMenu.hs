@@ -33,13 +33,13 @@ setup w = do
 
 greet :: UI Element
 greet =
-  UI.h1 #+ [string "Bienvenido al anotador piola!" ] # set UI.class_ "text-center text-light"
+  UI.h1 #+ [string "Bienvenido al anotador piola!" ] #. "text-center text-light"
 
 make_buttons :: [UI Element]
 make_buttons = 
-  [ UI.button # set UI.text "Cargar juego" # set UI.class_ "btn_init_page btn col-4" # set UI.id_ "load_game"
-  , UI.button # set UI.text "Nuevo juego" # set UI.class_ "btn_init_page btn col-4" # set UI.id_ "new_game"
-  , UI.button # set UI.text "Estadísticas" # set UI.class_ "btn_init_page btn col-4" # set UI.id_ "statistics"
+  [ UI.button # set UI.text "Cargar juego" #. "btn_init_page btn col-4" # set UI.id_ "load_game"
+  , UI.button # set UI.text "Nuevo juego" #. "btn_init_page btn col-4" # set UI.id_ "new_game"
+  , UI.button # set UI.text "Estadísticas" #. "btn_init_page btn col-4" # set UI.id_ "statistics"
   ]
 
 getStaticDir :: IO FilePath

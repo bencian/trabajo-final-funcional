@@ -6,26 +6,30 @@ module SharedBackend where
 
   import System.IO
 
-  type Game = [Round]
+  type Game = ([Round],[String])
   type Round = [Player]
   type Player = (String,Int,Int)
 
   create_new_game :: UI [String] -> UI Game
   create_new_game player_list = do
     players <- player_list
-    return ((map (create_player) players):[])
+    return ([],players)
 
-  get_player_list :: Game -> [String]
+  get_player_list :: [Round] -> [String]
   get_player_list game = map (\(x,y,z) -> x) (head game)
 
-  create_player :: String -> Player
-  create_player name = (name,0,0)
+  create_round :: [String] -> [String] -> Round
+  create_round [] [] = []
+  create_round (player:players) (value:values) = (create_player player (read value :: Int)):(create_round players values)
+  
+  create_player :: String -> Int -> Player
+  create_player name prediction = (name,prediction,0)
 
-  number_of_cards_round :: Game -> Int
+  number_of_cards_round :: [Round] -> Int
   number_of_cards_round game = 
   -- si length game < 7 entonces length game
     if length game < 7
-      then (length game)
+      then (length game) + 1
       else 
         -- si 7 <= length game <= 7 + length player_list entonces 7
         if length game <= (7 + length (get_player_list game))
@@ -34,8 +38,12 @@ module SharedBackend where
             -- si length game > 7 + length player_list entonces rounds_left player_list game
             rounds_left game
 
-  rounds_left :: Game -> Int
+  rounds_left :: [Round] -> Int
   rounds_left game = (num_rounds (get_player_list game)) - length game
 
   num_rounds :: [String] -> Int
   num_rounds player_list = 14 + length player_list
+
+  insert_values_into_round :: Round -> [String] -> Round
+  insert_values_into_round [] [] = []
+  insert_values_into_round ((name,predicted,won):player_tuples) (value:values) = (name,predicted,(read value :: Int)):(insert_values_into_round player_tuples values) 

@@ -52,6 +52,7 @@ module NewGame (render_new_game) where
     redo_layout
     redirect_to_button "main_menu" setup w
     redirect_to_button "play_game" (render_play_game game_title (create_new_game player_list) setup) w 
+    -- redirect_to_button "play_game" (render_play_game game_title hardcoded_game setup) w
 
     on UI.click add_player_button $ \_ -> addInput >> redo_layout
     on UI.click remove_player_button $ \_ -> removeInput >> redo_layout
@@ -67,13 +68,16 @@ module NewGame (render_new_game) where
   add_remove_btns_div buttons = UI.div # set UI.id_ "add_and_remove_buttons" #+ map element buttons
   
   add_player_btn :: UI Element
-  add_player_btn = UI.button # set UI.text "Agregar" # set UI.class_ "btn btn-success" # set UI.id_ "add_player"
+  add_player_btn = UI.button # set UI.text "Agregar" #. "btn btn-success" # set UI.id_ "add_player"
 
   remove_player_btn :: UI Element
-  remove_player_btn = UI.button # set UI.text "Eliminar" # set UI.class_ "btn btn-danger" # set UI.id_ ("remove_player")
+  remove_player_btn = UI.button # set UI.text "Eliminar" #. "btn btn-danger" # set UI.id_ ("remove_player")
 
   add_button_container :: [UI Element]
   add_button_container = button_container (main_menu_button ++ play_game_button)
 
   add_game_players_form :: Element -> Element -> [UI Element]
   add_game_players_form add_player_button remove_player_button = game_players_form [add_player_button, remove_player_button]
+
+  -- hardcoded_game = do
+  --   return [[("a",0,1),("b",0,2),("c",0,3)],[("a",1,0),("b",2,0),("c",3,0)],[("a",1,1),("b",2,2),("c",3,3)]]
