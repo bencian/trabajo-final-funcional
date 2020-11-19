@@ -5,6 +5,7 @@ module SharedBackend where
   import Control.Monad
 
   import System.IO
+  import Data.Char
 
   type Game = ([Round],[String])
   type Round = [Player]
@@ -66,9 +67,21 @@ module SharedBackend where
   get_won :: Player -> Int
   get_won = \(x,y,z) -> z
 
-  valid_values :: [String] -> Int -> Bool
-  valid_values values_list number_of_cards = sum (map (\x -> read x :: Int) values_list) /= number_of_cards
+  valid_card_inputs :: [String] -> Int -> (Int -> Int -> Bool) -> Bool
+  valid_card_inputs values_list number_of_cards equality_function = (no_empty_inputs values_list) && (valid_numeric_inputs values_list number_of_cards) && (equality_function (sum (map (\x -> read x :: Int) values_list)) number_of_cards)
+
+  error_message :: String
+  error_message = "Error en los inputs, intente nuevamente"
 
   if' :: Bool -> a -> a -> a
   if' True  x _ = x
   if' False _ y = y
+
+  no_empty_inputs :: [String] -> Bool
+  no_empty_inputs = all (/= [])
+
+  valid_numeric_inputs :: [String] -> Int -> Bool
+  valid_numeric_inputs inputs cards = all (\input -> (all isDigit input) && (input_between_0_and_cards cards input)) inputs
+
+  input_between_0_and_cards :: Int -> String -> Bool
+  input_between_0_and_cards cards input = ((read input :: Int) >= 0) && ((read input :: Int) <= cards)

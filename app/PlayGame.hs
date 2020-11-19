@@ -31,42 +31,39 @@ module PlayGame (render_play_game) where
       input_list :: UI [String]
       input_list = mapM (get value) =<< getElementsByTagName w "input"
 
-      redo_layout :: IORef Game -> String -> UI ()
-      redo_layout ioref_game string = void $ do
+      redo_layout :: IORef Game -> String -> String -> UI ()
+      redo_layout ioref_game current_action_string error_string = void $ do
         game <- liftIO (readIORef ioref_game)
-        board_element <- board #+ (table_elements game string)
+        board_element <- board #+ (table_elements game current_action_string)
         element (from_just board_div_element) # set children [board_element]
+        (element (from_just board_div_element)) #+ [UI.p #. "text-danger" # set UI.text error_string]
 
-      correct_inputs :: Game -> [String] -> UI ()
-      correct_inputs game_value values_list = do
-        (element (from_just confirm_predicted_rounds)) #. "hide btn btn-sm"
-        (element (from_just confirm_won_rounds)) #. "btn btn-sm"
-        liftIO $ writeIORef mutable_game (insert_predicted game_value values_list)
-        redo_layout mutable_game ("Ingresar ganadas para " ++ show (number_of_cards_round (fst game_value)))
+      correct_inputs :: Game -> Maybe Element -> Maybe Element -> String -> UI ()
+      correct_inputs modified_game show_button hide_button action_text = do
+        (element (from_just show_button)) #. "btn btn-sm"
+        (element (from_just hide_button)) #. "hide btn btn-sm"
+        liftIO $ writeIORef mutable_game (modified_game)
+        redo_layout mutable_game action_text ""
 
-      incorrect_inputs :: Game -> UI ()
-      incorrect_inputs game_value = do
-        redo_layout mutable_game ("Ingresar predicciones para " ++ show (number_of_cards_round (fst game_value)))
+      incorrect_inputs :: String -> UI ()
+      incorrect_inputs message = do
+        redo_layout mutable_game message error_message
         
 
-    redo_layout mutable_game "Ingresar predicciones para 1"
+    redo_layout mutable_game "Ingresar predicciones para 1" ""
 
     redirect_to_button "main_menu" setup w
   
     on UI.click (from_just confirm_predicted_rounds) $ const $ do
       values_list <- input_list
       game_value <- liftIO $ readIORef mutable_game
-      if' (valid_values values_list (number_of_cards_round (fst game_value))) (correct_inputs game_value values_list) (incorrect_inputs game_value)      
+      if' (valid_card_inputs values_list (number_of_cards_round (fst game_value)) (/=)) (correct_inputs (insert_predicted game_value values_list) confirm_won_rounds confirm_predicted_rounds (won_message (number_of_cards_round (fst game_value)))) (incorrect_inputs (prediction_message (number_of_cards_round (fst game_value))))
       
-
     on UI.click (from_just confirm_won_rounds) $ const $ do
       values_list <- input_list
       game_value <- liftIO $ readIORef mutable_game
-      -- if else validation
-      (element (from_just confirm_predicted_rounds)) #. "btn btn-sm"
-      (element (from_just confirm_won_rounds)) #. "hide btn btn-sm"
-      liftIO $ writeIORef mutable_game (insert_winnings game_value values_list)
-      redo_layout mutable_game ("Ingresar predicciones para " ++ show (number_of_cards_round (fst game_value)))
+      -- add else if in the correct branch to end the game
+      if' (valid_card_inputs values_list (number_of_cards_round (tail (fst game_value))) (==)) (correct_inputs (insert_winnings game_value values_list) confirm_predicted_rounds confirm_won_rounds (prediction_message (number_of_cards_round (fst game_value)))) (incorrect_inputs (won_message (number_of_cards_round (tail (fst game_value)))))
 
   greet :: String -> UI Element
   greet name =
@@ -120,7 +117,7 @@ module PlayGame (render_play_game) where
 
   create_columns :: Round -> [UI Element]
   create_columns [] = []
-  create_columns ((x,y,z):round) = (UI.td #+ [ UI.p # set UI.text (show y), UI.p # set UI.text (show z)]):(create_columns round)
+  create_columns ((x,y,z):round) = (UI.td #+ [ UI.p # set UI.text ("Predictas: "++(show y)), UI.p # set UI.text ("Ganadas: "++(show z))]):(create_columns round)
 
   insert_winnings :: Game -> [String] -> Game
   insert_winnings (rounds, players) values = ((reverse (((insert_values_into_round (head (reverse rounds)) values):(tail (reverse rounds))))), players)
@@ -128,3 +125,8 @@ module PlayGame (render_play_game) where
   insert_predicted :: Game -> [String] -> Game
   insert_predicted (rounds, players) values = (rounds ++ [create_round players values], players)
 
+  prediction_message :: Int -> String
+  prediction_message cards = "Ingresar predicciones para " ++ show cards
+
+  won_message :: Int -> String
+  won_message cards = "Ingresar ganadas para " ++ show cards
