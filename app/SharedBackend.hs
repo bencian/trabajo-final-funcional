@@ -85,3 +85,25 @@ module SharedBackend where
 
   input_between_0_and_cards :: Int -> String -> Bool
   input_between_0_and_cards cards input = ((read input :: Int) >= 0) && ((read input :: Int) <= cards)
+
+  last_round_won_values_sum :: [Round] -> Int
+  last_round_won_values_sum [] = 0
+  last_round_won_values_sum game = sum (map get_won (head (reverse game)))
+
+  is_game_over :: [Round] -> Bool
+  is_game_over [] = False
+  is_game_over game = (is_current_round_over game) && (rounds_left game == 0)
+
+  is_current_round_over :: [Round] -> Bool
+  is_current_round_over [] = True
+  is_current_round_over game = last_round_won_values_sum (game) /= 0
+
+  no_repeated_names :: [String] -> Bool
+  no_repeated_names names = no_repeats names names
+
+  no_repeats :: [String] -> [String] -> Bool
+  no_repeats [] _ = True
+  no_repeats (name:names) list = (unique_name list name) && (no_repeats names list)
+
+  unique_name :: [String] -> String -> Bool
+  unique_name player_list name = (length (filter (\x -> x == name) player_list)) == 1

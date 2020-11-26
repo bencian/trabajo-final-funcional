@@ -29,33 +29,48 @@ module NewGame (render_new_game) where
     form_div_element <- getElementById w "form_div"
 
     let
+      validate :: String -> [String] -> Bool
+      validate game_title players = (game_title /= "") && (no_empty_inputs players) && (no_repeated_names players)
+      
       player_list :: UI [String]
       player_list = mapM (get value) =<< liftIO (readIORef inputs)
 
       game_title = get value (from_just game_name_element)
 
-      addInput :: UI ()
-      addInput = do
+      add_input :: UI ()
+      add_input = do
         add_element <- UI.input
         liftIO $ modifyIORef inputs ( ++ [add_element])
 
-      removeInput :: UI ()
-      removeInput = liftIO $ modifyIORef inputs init
+      remove_input :: UI ()
+      remove_input = liftIO $ modifyIORef inputs init
 
       redo_layout :: UI ()
       redo_layout = void $ do
         elements <- liftIO (readIORef inputs)
         (element (from_just form_div_element)) # set children elements
-        
-    
-    addInput
+
+    add_input
     redo_layout
     redirect_to_button "main_menu" setup w
-    redirect_to_button "play_game" (render_play_game game_title (create_new_game player_list) setup) w 
+    
+    screen_button <- getElementById w "play_game"
+    main_div_element <- getElementById w "main_div"
+
+    on UI.click (from_just screen_button) $ const $ do
+      players <- player_list
+      title <- game_title
+      if validate title players
+      then do 
+        delete (from_just main_div_element)
+        (render_play_game game_title (create_new_game player_list) setup) w
+      else do
+        (element (from_just main_div_element)) #+ [UI.p #. "text-danger" # set UI.text "Hay nombres repetidos o inputs en blanco"]
+        redo_layout
     -- redirect_to_button "play_game" (render_play_game game_title hardcoded_game setup) w
 
-    on UI.click add_player_button $ \_ -> addInput >> redo_layout
-    on UI.click remove_player_button $ \_ -> removeInput >> redo_layout
+    on UI.click add_player_button $ \_ -> add_input >> redo_layout
+    on UI.click remove_player_button $ \_ -> remove_input >> redo_layout
 
   game_name_form :: [UI Element]
   game_name_form = [UI.h3 # set UI.text "Nombre del juego " # set UI.id_ "game_name", UI.input # set UI.id_ "game_title"]

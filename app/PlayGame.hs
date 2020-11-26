@@ -31,39 +31,46 @@ module PlayGame (render_play_game) where
       input_list :: UI [String]
       input_list = mapM (get value) =<< getElementsByTagName w "input"
 
-      redo_layout :: IORef Game -> String -> String -> UI ()
-      redo_layout ioref_game current_action_string error_string = void $ do
+      redo_layout :: IORef Game -> UI Element -> UI ()
+      redo_layout ioref_game message_element = void $ do
         game <- liftIO (readIORef ioref_game)
-        board_element <- board #+ (table_elements game current_action_string)
+        board_element <- board #+ (table_elements game)
         element (from_just board_div_element) # set children [board_element]
-        (element (from_just board_div_element)) #+ [UI.p #. "text-danger" # set UI.text error_string]
+        (element (from_just board_div_element)) #+ [message_element]
 
-      correct_inputs :: Game -> Maybe Element -> Maybe Element -> String -> UI ()
-      correct_inputs modified_game show_button hide_button action_text = do
-        (element (from_just show_button)) #. "btn btn-sm"
-        (element (from_just hide_button)) #. "hide btn btn-sm"
-        liftIO $ writeIORef mutable_game (modified_game)
-        redo_layout mutable_game action_text ""
+      correct_inputs :: Game -> Maybe Element -> Maybe Element -> UI ()
+      correct_inputs modified_game show_button hide_button = do
+        if is_game_over (fst modified_game)
+        then do 
+          (element (from_just show_button)) #. "hide btn btn-sm"
+          (element (from_just hide_button)) #. "hide btn btn-sm"
+          liftIO $ writeIORef mutable_game (modified_game)
+          redo_layout mutable_game (UI.p #. "text-success" # set UI.text "Partida terminada!")
+        else do 
+          (element (from_just show_button)) #. "btn btn-sm"
+          (element (from_just hide_button)) #. "hide btn btn-sm"
+          liftIO $ writeIORef mutable_game (modified_game)
+          redo_layout mutable_game (UI.p)
+          
 
-      incorrect_inputs :: String -> UI ()
-      incorrect_inputs message = do
-        redo_layout mutable_game message error_message
-        
 
-    redo_layout mutable_game "Ingresar predicciones para 1" ""
+      incorrect_inputs :: UI ()
+      incorrect_inputs = do
+        redo_layout mutable_game (UI.p #. "text-danger" # set UI.text error_message)
+
+    redo_layout mutable_game (UI.p)
 
     redirect_to_button "main_menu" setup w
   
     on UI.click (from_just confirm_predicted_rounds) $ const $ do
       values_list <- input_list
       game_value <- liftIO $ readIORef mutable_game
-      if' (valid_card_inputs values_list (number_of_cards_round (fst game_value)) (/=)) (correct_inputs (insert_predicted game_value values_list) confirm_won_rounds confirm_predicted_rounds (won_message (number_of_cards_round (fst game_value)))) (incorrect_inputs (prediction_message (number_of_cards_round (fst game_value))))
+      if' (valid_card_inputs values_list (number_of_cards_round (fst game_value)) (/=)) (correct_inputs (insert_predicted game_value values_list) confirm_won_rounds confirm_predicted_rounds) incorrect_inputs
       
     on UI.click (from_just confirm_won_rounds) $ const $ do
       values_list <- input_list
       game_value <- liftIO $ readIORef mutable_game
-      -- add else if in the correct branch to end the game
-      if' (valid_card_inputs values_list (number_of_cards_round (tail (fst game_value))) (==)) (correct_inputs (insert_winnings game_value values_list) confirm_predicted_rounds confirm_won_rounds (prediction_message (number_of_cards_round (fst game_value)))) (incorrect_inputs (won_message (number_of_cards_round (tail (fst game_value)))))
+      if' (valid_card_inputs values_list (number_of_cards_round (tail (fst game_value))) (==)) (correct_inputs (insert_winnings game_value values_list) confirm_predicted_rounds confirm_won_rounds) incorrect_inputs
 
   greet :: String -> UI Element
   greet name =
@@ -92,15 +99,15 @@ module PlayGame (render_play_game) where
   players_td_list :: [String] -> [UI Element]
   players_td_list players = map (\name -> UI.td #+ [string name]) players
 
-  create_inputs :: Game -> String -> [UI Element]
-  create_inputs game string = 
-    [UI.tr # set UI.id_ "game_inputs" #+ ((UI.td # set UI.id_ "input_header" # set UI.text string):(create_inputs_row (snd game)))]
+  create_inputs :: Game -> [UI Element]
+  create_inputs game = 
+    if' (is_game_over (fst game)) ([]) ([UI.tr # set UI.id_ "game_inputs" #+ ((UI.td # set UI.id_ "input_header" # set UI.text (get_game_message (fst game))):(create_inputs_row (snd game)))])
     
   create_inputs_row :: [String] -> [UI Element]
   create_inputs_row = map (\(x:xs) -> UI.td #+ [UI.input # set UI.id_ (show x)])
 
-  table_elements :: Game -> String -> [UI Element]
-  table_elements game string = (board_header game) ++ (create_table_rows (reverse (fst game))) ++ (create_scores game) ++ (create_inputs game string)
+  table_elements :: Game -> [UI Element]
+  table_elements game = (board_header game) ++ (create_table_rows (reverse (fst game))) ++ (create_scores game) ++ (create_inputs game)
 
   create_scores :: Game -> [UI Element]
   create_scores game = [ UI.tr # set UI.id_ "game_scores" #+ ((UI.td # set UI.id_ "score_headers" # set UI.text "Puntaje: "):(create_scores_row game)) ]
@@ -109,7 +116,7 @@ module PlayGame (render_play_game) where
   create_scores_row game = map (partial_score_td (fst game)) (snd game)
 
   partial_score_td :: [Round] -> String -> UI Element
-  partial_score_td game name = UI.td #+ [UI.p # set UI.text (show (get_player_score game name))]
+  partial_score_td game name = UI.td #+ [UI.p # set UI.text (player_score game name)]
 
   create_table_rows :: [Round] -> [UI Element]
   create_table_rows [] = []
@@ -130,3 +137,10 @@ module PlayGame (render_play_game) where
 
   won_message :: Int -> String
   won_message cards = "Ingresar ganadas para " ++ show cards
+
+  get_game_message :: [Round] -> String
+  get_game_message [] = "Ingrese predicciones para 1"
+  get_game_message game = if' (is_current_round_over game) (prediction_message (number_of_cards_round game)) (won_message (number_of_cards_round (tail game)))
+
+  player_score :: [Round] -> String -> String
+  player_score game name = if' (is_current_round_over game) (show (get_player_score game name)) (show (get_player_score (tail (reverse game)) name))
