@@ -21,11 +21,12 @@ module PlayGame (render_play_game) where
     game <- ui_game
     mutable_game <- liftIO $ newIORef game
     
-    getBody w #+ main_div ([greet title, board_div] ++ action_buttons ++ button_container main_menu_button)
+    getBody w #+ main_div ([greet title, board_div] ++ action_buttons ++ button_container (main_menu_button ++ save_button))
     
     confirm_predicted_rounds <- getElementById w "confirm_predicted_rounds"
     confirm_won_rounds <- getElementById w "confirm_won_rounds"
     board_div_element <- getElementById w "board_div"
+    save_button_element <- getElementById w "save_game"
 
     let
       input_list :: UI [String]
@@ -72,12 +73,21 @@ module PlayGame (render_play_game) where
       game_value <- liftIO $ readIORef mutable_game
       if' (valid_card_inputs values_list (number_of_cards_round (tail (fst game_value))) (==)) (correct_inputs (insert_winnings game_value values_list) confirm_predicted_rounds confirm_won_rounds) incorrect_inputs
 
+    on UI.click (from_just save_button_element) $ const $ do
+      game_value <- liftIO $ readIORef mutable_game
+      liftIO (save_file title game_value)
+      redo_layout mutable_game (UI.p #. "text-success" # set UI.text "Partida guardada!")
+
   greet :: String -> UI Element
   greet name =
     UI.h2 #+ [string name ] #. "text-center text-light"
 
   action_buttons :: [UI Element]
   action_buttons = [confirm_predicted_button, confirm_won_button]
+
+  save_button :: [UI Element]
+  save_button =
+      [ UI.button # set UI.text "Guardar" #. "btn_init_page btn col-4" # set UI.id_ "save_game" ]
 
   confirm_predicted_button =
     UI.button # set UI.text "Confirmar predicciones" #. "btn btn-sm" # set UI.id_ "confirm_predicted_rounds"

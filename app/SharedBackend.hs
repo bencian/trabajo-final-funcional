@@ -4,8 +4,14 @@ module SharedBackend where
 
   import Control.Monad
 
+  import Data.Binary
+
   import System.IO
+  import System.Directory
   import Data.Char
+  import Data.List
+
+  import Shared
 
   type Game = ([Round],[String])
   type Round = [Player]
@@ -107,3 +113,34 @@ module SharedBackend where
 
   unique_name :: [String] -> String -> Bool
   unique_name player_list name = (length (filter (\x -> x == name) player_list)) == 1
+
+  main_path :: String
+  main_path = "saved_games/"
+
+  file_prefix :: String
+  file_prefix = "game_"
+
+  file_suffix :: String
+  file_suffix = ".pdrd"
+
+  save_file :: String -> Game -> IO ()
+  save_file game_title game = encodeFile (main_path ++ file_prefix ++ game_title ++ file_suffix) (show game)
+
+  open_file :: String -> IO Game
+  open_file game_title = do 
+    file_string <- decodeFile (main_path ++ file_prefix ++ game_title ++ file_suffix) :: IO String
+    return (read file_string :: Game)
+
+  load_game_list :: IO [String]
+  load_game_list = do
+    list_all_files <- (getDirectoryContents main_path)
+    return (map (remove_affixes) (filter correct_file list_all_files))
+
+  correct_file :: String -> Bool
+  correct_file file_name = (isSuffixOf file_suffix file_name) && (isPrefixOf file_prefix file_name)
+  
+  remove_affixes :: String -> String
+  remove_affixes file_string = stripSuffix (from_just (stripPrefix file_prefix file_string))
+
+  stripSuffix :: String -> String
+  stripSuffix file_string = reverse (from_just (stripPrefix (reverse file_suffix) (reverse file_string)))

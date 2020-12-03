@@ -28,7 +28,7 @@ setup w = do
   getBody w #+ main_div (greet:(button_container make_buttons))
 
   redirect_to_button "new_game" (render_new_game setup) w
-  redirect_to_button "load_game" (render_new_game setup) w
+  redirect_to_button "load_game" (render_load_game setup) w
   redirect_to_button "statistics" (render_new_game setup) w
 
 greet :: UI Element
