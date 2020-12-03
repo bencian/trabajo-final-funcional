@@ -16,3 +16,5 @@ cabal.sandbox.config
 /.externalToolBuilders
 *.sublime-workspace
 .ghc.environment.*
+/app/saved_games/*
+!/app/saved_games/.keep
