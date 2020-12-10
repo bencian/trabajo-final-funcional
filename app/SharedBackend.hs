@@ -127,14 +127,17 @@ module SharedBackend where
   save_file game_title game = encodeFile (main_path ++ file_prefix ++ game_title ++ file_suffix) (show game)
 
   open_file :: String -> IO Game
-  open_file game_title = do 
-    file_string <- decodeFile (main_path ++ file_prefix ++ game_title ++ file_suffix) :: IO String
+  open_file filename = do 
+    file_string <- decodeFile (main_path ++ filename) :: IO String
     return (read file_string :: Game)
+
+  delete_file :: String -> IO ()
+  delete_file filename = removeFile (main_path ++ filename)
 
   load_game_list :: IO [String]
   load_game_list = do
     list_all_files <- (getDirectoryContents main_path)
-    return (map (remove_affixes) (filter correct_file list_all_files))
+    return (filter correct_file list_all_files)
 
   correct_file :: String -> Bool
   correct_file file_name = (isSuffixOf file_suffix file_name) && (isPrefixOf file_prefix file_name)

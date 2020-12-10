@@ -73,7 +73,7 @@ module NewGame (render_new_game) where
     on UI.click remove_player_button $ \_ -> remove_input >> redo_layout
 
   game_name_form :: [UI Element]
-  game_name_form = [UI.h3 # set UI.text "Nombre del juego " # set UI.id_ "game_name", UI.input # set UI.id_ "game_title"]
+  game_name_form = [greet "Nombre del juego", UI.input # set UI.id_ "game_title"]
 
   game_players_form :: [Element] -> [UI Element]
   game_players_form buttons =

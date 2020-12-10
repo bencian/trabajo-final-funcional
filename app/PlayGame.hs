@@ -78,10 +78,6 @@ module PlayGame (render_play_game) where
       liftIO (save_file title game_value)
       redo_layout mutable_game (UI.p #. "text-success" # set UI.text "Partida guardada!")
 
-  greet :: String -> UI Element
-  greet name =
-    UI.h2 #+ [string name ] #. "text-center text-light"
-
   action_buttons :: [UI Element]
   action_buttons = [confirm_predicted_button, confirm_won_button]
 
@@ -134,7 +130,7 @@ module PlayGame (render_play_game) where
 
   create_columns :: Round -> [UI Element]
   create_columns [] = []
-  create_columns ((x,y,z):round) = (UI.td #+ [ UI.p # set UI.text ("Predictas: "++(show y)), UI.p # set UI.text ("Ganadas: "++(show z))]):(create_columns round)
+  create_columns ((x,y,z):round) = (UI.td #+ [ UI.p # set UI.text ("Predichas: "++(show y)), UI.p # set UI.text ("Ganadas: "++(show z))]):(create_columns round)
 
   insert_winnings :: Game -> [String] -> Game
   insert_winnings (rounds, players) values = ((reverse (((insert_values_into_round (head (reverse rounds)) values):(tail (reverse rounds))))), players)

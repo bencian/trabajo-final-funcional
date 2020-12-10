@@ -25,15 +25,11 @@ setup w = do
   UI.addStyleSheet w "bootstrap.css"
 
       
-  getBody w #+ main_div (greet:(button_container make_buttons))
+  getBody w #+ main_div ((greet "Bienvenido al anotador piola!"):(button_container make_buttons))
 
   redirect_to_button "new_game" (render_new_game setup) w
   redirect_to_button "load_game" (render_load_game setup) w
   redirect_to_button "statistics" (render_new_game setup) w
-
-greet :: UI Element
-greet =
-  UI.h1 #+ [string "Bienvenido al anotador piola!" ] #. "text-center text-light"
 
 make_buttons :: [UI Element]
 make_buttons = 

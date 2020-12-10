@@ -1,0 +1,14 @@
+.load_button{
+  float: right;
+}
+.delete_button{
+  float: right;
+}
+li{
+  overflow: auto;
+}
+ul{
+  width: 80%;
+  margin: auto;
+  height: auto;
+}

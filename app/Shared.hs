@@ -26,6 +26,10 @@ module Shared where
   main_div :: [UI Element] -> [UI Element]
   main_div elements = 
     [ UI.div # set UI.id_ "main_div" #+ elements ]
+
+  greet :: String -> UI Element
+  greet name =
+    UI.h2 #+ [string name ] #. "text-center text-light"
   
   from_just :: Maybe a -> a
   from_just (Just a) = a

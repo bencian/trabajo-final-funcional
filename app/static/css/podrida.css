@@ -2,12 +2,12 @@ body {
   background: url(wood-bg.png);
   padding-top: 1em;
 }
-h1 {
+h2 {
   font-size: 4em;
   margin: 0;
   padding-bottom: 0.2em;
 }
-h1 span {
+h2 span {
   color: azure;
 }
 .btn_init_page{
