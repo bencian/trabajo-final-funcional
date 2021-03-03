@@ -18,7 +18,7 @@ En sistemas Linux:
   2) Luego en la carpeta raíz del proyecto:
       `stack build`
 
-## Instalación
+## Ejecución
 
 Simplemente ejecutar el script "startpodrida" que se encuentra en el directorio raíz del proyecto.
 
