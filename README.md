@@ -22,7 +22,7 @@ En sistemas Windows:
   1) Instalar Linux
   2) Hacer los pasos para Linux
 
-## Instalación
+## Ejecución
 
 Simplemente ejecutar el script "startpodrida" que se encuentra en el directorio raíz del proyecto.
 
