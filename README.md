@@ -8,8 +8,19 @@ El desarrollo está realizado en su totalidad en Haskell y se utilizó para la G
 
 Todo el código que conforma el anotador se encuentra dentro de la carpet "app" de este proyecto.
 
-## Instalación y ejecución
+## Instalación de dependencias
 
+Se requiere la instalación de Stack, herramienta para el desarrollo de proyectos Haskell (https://docs.haskellstack.org/en/stable/README/).
+
+En sistemas Linux:
+  1) Ejecutar:
+    `wget -qO- https://get.haskellstack.org/ | sh`
+  2) Luego en la carpeta raíz del proyecto:
+      `stack build`
+
+## Instalación
+
+Simplemente ejecutar el script "startpodrida" que se encuentra en el directorio raíz del proyecto
 
 ## Sobre Threepenny
 
