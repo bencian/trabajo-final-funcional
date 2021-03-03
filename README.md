@@ -6,7 +6,10 @@ Se trata de un anotador para el conocido juego de cartas llamado "la podrida".
 
 El desarrollo está realizado en su totalidad en Haskell y se utilizó para la GUI el framework Threepenny (https://wiki.haskell.org/Threepenny-gui).
 
+Todo el código que conforma el anotador se encuentra dentro de la carpet "app" de este proyecto.
+
 ## Instalación y ejecución
+
 
 ## Sobre Threepenny
 
