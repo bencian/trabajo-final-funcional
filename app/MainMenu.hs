@@ -6,7 +6,6 @@ import Control.Monad
 import System.FilePath
 import System.IO
 
-import Statistics
 import NewGame
 import LoadGame
 import Shared
@@ -29,13 +28,11 @@ setup w = do
 
   redirect_to_button "new_game" (render_new_game setup) w
   redirect_to_button "load_game" (render_load_game setup) w
-  redirect_to_button "statistics" (render_new_game setup) w
 
 make_buttons :: [UI Element]
 make_buttons = 
   [ UI.button # set UI.text "Cargar juego" #. "btn_init_page btn col-4" # set UI.id_ "load_game"
   , UI.button # set UI.text "Nuevo juego" #. "btn_init_page btn col-4" # set UI.id_ "new_game"
-  , UI.button # set UI.text "Estadísticas" #. "btn_init_page btn col-4" # set UI.id_ "statistics"
   ]
 
 getStaticDir :: IO FilePath
