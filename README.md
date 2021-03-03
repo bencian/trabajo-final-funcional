@@ -20,7 +20,11 @@ En sistemas Linux:
 
 ## Instalación
 
-Simplemente ejecutar el script "startpodrida" que se encuentra en el directorio raíz del proyecto
+Simplemente ejecutar el script "startpodrida" que se encuentra en el directorio raíz del proyecto.
+
+Luego en el navegador web estará disponible el anotador en `localhost` en el puerto `8023`.
+
+O entrar en `http://127.0.0.1:8023/`
 
 ## Sobre Threepenny
 
