@@ -18,6 +18,10 @@ En sistemas Linux:
   2) Luego en la carpeta raíz del proyecto:
       `stack build`
 
+En sistemas Windows:
+  1) Instalar Linux
+  2) Hacer los pasos para Linux
+
 ## Instalación
 
 Simplemente ejecutar el script "startpodrida" que se encuentra en el directorio raíz del proyecto.
